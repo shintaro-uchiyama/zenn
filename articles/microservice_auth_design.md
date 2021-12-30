@@ -33,6 +33,7 @@ Firebase Auth, Cognito, Auth0とか色々あるけど
 
 ザクっと処理の流れはこんな感じ
 
+![token](/images/microservice_auth_design/access_refresh_token.png)
 
 ## 鍵のローテーション
 
