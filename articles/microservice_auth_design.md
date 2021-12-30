@@ -44,27 +44,21 @@ Firebase Auth, Cognito, Auth0とか色々あるけど
 リフレッシュトークンが有効な期間（1週間）は古い鍵セットは消せない
 すぐ古いの消しちゃうと、ちょっと前に認証成功した人のトークン復号出来なくて未ログインになっちゃう
 
+![token](/images/microservice_auth_design/key_rotation.png)
+
 # 認可
+
+認可はRBAC(Role-based access control)で行う    
+認証時に発行したJWT形式のAccessTokenにPermissionを付与して  
+各マイクロサービスでそのPermissionの存在判定を行う
 
 ## 処理の流れ
 
-所謂RBACで実装する
-Identity Serviceの認証時にユーザーのRoleに紐づくPermissionを付与してJWTに詰め込んどく
+各マクロサービス内でPermissionの存在判定は  
+文字列のベタ書きじゃなくてGolangとかのmodにして外部から適切に定数で取得できるようにしたい...  
 
-各マイクロサービスでJWTを復号して中に入ってるPermissionで認可判定
-
-JWTヘッダーのkidに紐づく公開鍵を各マイクロサービスのキャッシュから取得
-存在しない場合IdentityServiceのJWKS Endpointからkidに紐づく公開鍵を探す
-存在したら対象の公開鍵をキャッシュし復号する感じ！
-
-
-各マクロサービス内のPermission名判定するところ
-ベタ書きじゃなくてGolangとかのmodにして外部から適切に定数で取得できるようにしたいな...
+![authorization](/images/microservice_auth_design/authorization.png)
 
 # まとめ
 
-やっとバックエンド周りも着手できてきた
-フロントエンドも楽しいけど、UIセンス的な観点が弱いので
-バックエンドとかインフラの仕組み勉強して実装するほうがやっぱり楽しいな👯‍♂️
-
-ガツっと実装しちゃおう
+頭が少し整理できたので、がつっと実装していく💪🏻
