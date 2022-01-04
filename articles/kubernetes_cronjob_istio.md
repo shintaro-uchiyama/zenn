@@ -3,7 +3,7 @@ title: "Istio入ったKubernetesのCronJobがcompleteしない"
 emoji: "🎉"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["kubernetes", "CronJob", "Istio"]
-published: false
+published: true
 ---
 
 # 概要
@@ -136,7 +136,7 @@ jobもpodも処理が終わったら消えてくと思ってたけど
 ↓Jobは増え続ける
 
 ```zsh
-$ kubectl get jobs -n capital-farm -w                                                                                                                                                            +[auth]
+$ kubectl get jobs -n capital-farm -w
 NAME                  COMPLETIONS   DURATION   AGE
 rotate-key-27354273   0/1           3m24s      3m24s
 rotate-key-27354274   0/1           2m24s      2m24s
@@ -149,7 +149,7 @@ rotate-key-27354277   0/1           0s         0s
 ↓Podも増え続けて消えない
 
 ```zsh
-$ kubectl get pods -n capital-farm -w                                                                                             +[auth]
+$ kubectl get pods -n capital-farm -w
 NAME                                    READY   STATUS    RESTARTS   AGE
 rotate-key-27354408-t6pnr               0/2     Pending   0          0s
 rotate-key-27354408-t6pnr               0/2     Pending   0          0s
@@ -181,7 +181,7 @@ rotate-key-27354410-kmgqb               0/2     Init:2/3          0          2s
 こんな感じ
 
 ```zsh
-$ git diff                                                                                                                        +[auth]
+$ git diff
 diff --git a/infra/kubernetes/capital-farm/identity/rotate-key-cron.yaml b/infra/kubernetes/capital-farm/identity/rotate-key-cron.yaml
 index d995648..9527cbc 100644
 --- a/infra/kubernetes/capital-farm/identity/rotate-key-cron.yaml
@@ -208,7 +208,7 @@ index d995648..9527cbc 100644
 
 jobがCOMPLETIONSになって終わったら消えた
 ```zsh
- $ kubectl get jobs -n capital-farm -w                                                                                                                                                                                  [auth]
+ $ kubectl get jobs -n capital-farm -w
 NAME                  COMPLETIONS   DURATION   AGE
 rotate-key-27354441   0/1                      0s
 rotate-key-27354441   0/1           0s         0s
@@ -221,7 +221,7 @@ rotate-key-27354442   0/1                      0s
 
 podもterminatingされて終わったら消えてくれた
 ```zsh
-$ kubectl get pods -n capital-farm -w                                                                                             +[auth]
+$ kubectl get pods -n capital-farm -w
 NAME                                    READY   STATUS    RESTARTS   AGE
 rotate-key-27354417-g54r4               0/2     Pending   0          0s
 rotate-key-27354417-g54r4               0/2     Pending   0          0s
