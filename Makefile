@@ -1,0 +1,2 @@
+preview:
+	npx zenn preview
