@@ -1,5 +1,5 @@
 ---
-title: "Istio入ったk8sのCronJobがcompleteしない"
+title: "Istio入ったKubernetesのCronJobがcompleteしない"
 emoji: "🎉"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["kubernetes", "CronJob", "Istio"]
