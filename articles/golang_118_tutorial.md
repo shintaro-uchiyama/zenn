@@ -243,7 +243,7 @@ flagをつけると勝手にいろんなデータでテストが走り出す
 
 何回か走らせて色々怒られたのを直すとこんな感じ
 
-```golang: main.go
+```go: main.go
 package main
 
 import (
@@ -284,7 +284,7 @@ func Reverse(s string) (string, error) {
 
 `Reverse`がエラーならnil返すか`t.Skip()`する
 
-```golang: reverse_test.go
+```go: reverse_test.go
 package main
 
 import (
