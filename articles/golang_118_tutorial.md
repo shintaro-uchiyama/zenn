@@ -47,7 +47,7 @@ genericsでKやらVやら定義できまっせ。とそれだけ
 
 genericsガンガン使ってこう！！
 
-```golang: main.go
+```go: main.go
 package main
 
 import "fmt"
@@ -97,7 +97,7 @@ Generic Sums with Constraint: 46 and 62.97
 generics宣言された関数を呼び出す際に  
 明示的に型を定義しなくても、理解してくれるみたい
 
-```golang: main.go
+```go: main.go
 	fmt.Printf("Generic Sums with Constraint: %v and %v\n",
 		SumNumbers(ints),
 		SumNumbers(floats),
@@ -129,7 +129,7 @@ go: creating new go.mod: module example/fuzz
 この文字列を逆順にする関数をテストする  
 'abc' が入力なら 'cba' が出力で帰ってくる感じ
 
-```golang: main.go
+```go: main.go
 package main
 
 import (
@@ -160,13 +160,12 @@ func Reverse(s string) string {
 単体テストではTestXxxって書くとこをFuzzXxxって書いたり  
 `*testing.T`じゃなくて`*testing.F`使ったり微妙に違うくらい
 
-testcasesに記載した4つの入力データを用意して  
 1. 2回reverseして元の文字列に戻るか
 2. utf8として適切な文字列か検証
 
 の2つを検証してる
 
-```golang: reverse_test.go
+```go: reverse_test.go
 package main
 
 import (
@@ -234,8 +233,8 @@ FAIL	example/fuzz	0.561s
 
 UTF-8として適切な文字列じゃないって怒られた！！  
 
-`f.Add(tc)`を使うと自分で用意したデータでテストができるし  
-自身のデータを用意しなくても勝手にいろんなデータでテストが走り出す  
+`-fuzz` flagつけないと`f.Add(tc)`で突っ込んだ自分のテストデータだけテストして  
+flagをつけると勝手にいろんなデータでテストが走り出す  
 
 そんでこのFuzzテストはこけるまで永遠に続く  
 ので、`-fuzztime 5s` 引数で何秒実行するか指定が必要みたい
