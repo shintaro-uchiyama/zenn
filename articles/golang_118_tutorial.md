@@ -3,7 +3,7 @@ title: "Go 1.18のgenericsとfuzzingに最低限触れといた"
 emoji: "🌟"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: ["golang", "fuzzing", "generics"]
-published: false
+published: true
 ---
 
 # 概要
