@@ -37,11 +37,13 @@ published: false
 
 1. Read local, write local
    1. 読み込み・書き込み共に近いリージョンでやっちゃう
-   1. ![cross_region_problem](/images/aws_globalization/cross_region_problem.png)
+   1. ![cross_region_problem](/images/aws_globalization/read_local_write_local.png)
 1. Read local, write global
    1. 読み込みは近いリージョン・書き込みは特定のリージョン
    1. 上の例で言えば書き込みは全て東京リージョンに来る的な
+   1. ![cross_region_problem](/images/aws_globalization/read_local_write_global.png)
 1. Read local, write partitioned
    1. 読み込みは近いリージョン・書き込みは初回書き込みリージョン
-   2. それをホームリージョンとして、旅行して位置ずれた時もホームに書き込む
-   3. こうすれば常に特定のリージョンに大量書き込みリクエストが来てパンクするみたいな事象も避けられる
+   1. それをホームリージョンとして、旅行して位置ずれた時もホームに書き込む
+   1. こうすれば常に特定のリージョンに大量書き込みリクエストが来てパンクするみたいな事象も避けられる
+   1. ![cross_region_problem](/images/aws_globalization/read_local_write_partitioned.png)
