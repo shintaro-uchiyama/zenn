@@ -2,8 +2,8 @@
 title: "SaaS on AWSのGlobalization対応てみんなどうしてるんやろ"  
 emoji: "🌊"  
 type: "tech" # tech: 技術記事 / idea: アイデア  
-topics: []  
-published: false  
+topics: ["AWS", "SaaS", "Multi-Region"]  
+published: true
 ---
 
 # 概要
