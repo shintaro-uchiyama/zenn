@@ -75,7 +75,7 @@ transactionはったらlatencyとかどうなるの？とか御しきれる自�
 - https://d1.awsstatic.com/events/reinvent/2019/Multi-region_SaaS_Staying_agile_in_a_multi-geography_model_DEM143.pdf
 - https://www.europeclouds.com/blog/using-the-cloud-to-build-multi-region-architecture
 
-この辺の画像が全てを表してる気がする  
+この辺の画像が参考になるかな・・・    
 ![cross_region_problem](/images/aws_globalization/distributed_on_boarding.png)
 
 1. Landing pageでユーザーがどの辺の人か選択させて  
