@@ -3,7 +3,7 @@ title: "DynamoDBのテーブル設計どうやってるのか雰囲気掴みた�
 emoji: "🔥"
 type: "tech" # tech: 技術記事 / idea: アイデア  
 topics: ["dynamodb", "aws", "gsi"]
-published: false
+published: true
 ---
 
 # 概要
