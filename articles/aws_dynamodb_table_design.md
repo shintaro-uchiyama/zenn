@@ -1,7 +1,8 @@
 ---
 title: "DynamoDBのテーブル設計どうやってるのか雰囲気掴みたい"
 emoji: "🔥"
-type: "tech" # tech: 技術記事 / idea: アイデア topics: []
+type: "tech" # tech: 技術記事 / idea: アイデア  
+topics: ["dynamodb", "aws", "gsi"]
 published: false
 ---
 
@@ -17,11 +18,10 @@ https://docs.aws.amazon.com/ja_jp/amazondynamodb/latest/developerguide/Introduct
 - RDBMSはそこまで使い方見えてなくてもテーブル設計できる
     - DynamoDBではどのキーで検索してどういう情報取得するか見えてないと設計できない
         - 検索の柔軟性がないので事前に使われ方がわかってないといけないのだ
-- テーブルも正規化してたくさん作るんじゃなくてなるべく少なく。もはや1個がベスプラの世界線
-    - 各itemはPK(Partition Key)とSK(Sort Key)またはPKと呼ばれるPrimaryな項目が必須
-    - このPrimaryな項目はテーブル内で一意である必要がある
-- インデックスっていう概念がテーブル設計において重要になってくる
-    - この辺は後編で扱う
+- テーブルも正規化してたくさん作るんじゃなくてなるべく少なく
+    - もはや1個がベスプラの世界線
+- インデックスっていう概念を利用して検索性を高くできる
+    - ただインデックスはなるべく少なくしないと高コストになる
 
 # テーブル設計してみる
 
@@ -36,26 +36,29 @@ https://docs.aws.amazon.com/ja_jp/amazondynamodb/latest/developerguide/bp-relati
 
 1. 従業員IDを元に従業員詳細を取得
 2. 従業員名を元に従業員詳細を取得
-3. お客様の注文一覧をお客様IDと日付から取得
-3. お客様の注文一覧を日付から取得
+3. 特定のお客様の注文一覧をお客様IDと日付から取得
+3. お客様全体の注文情報を日付から取得
 
 ## エンティティを定義
 
 アクセスパターンを踏まえて  
 大元テーブルを作成するためにエンティティを定義
 
-PK(Partition Key)にはデータが分散するような項目を指定  
-とりあえずは従業員やお客様のID指定が無難かなぁ     
-SK(Sort Key)にはPKに加えて検索したい条件&ソートが上手く効く項目を指定するっぽい  
-（この辺は何個かケースこなさないと上手く設計できなさそう・・・）
-
 1. Employee - PK: EmployeeID, SK: EmployeeName
 3. Customer - PK: CustomerID, SK: AccountRepID
 4. Order - PK OrderID, SK: CustomerID
 
+ここで定義したPK(Partition Key)の単位でデータが保存されるらしい  
+このPKを均等に分散してデータアクセスするとコスト効率とレイテンシーが低いみたい  
+同じPKの箇所に大量にデータアクセスがくるとコストも高くレイテンシーも高くなるみたい  
+（とりあえずは従業員やお客様のID指定が無難かなぁ）
+
+SK(Sort Key)にはPKに加えて検索したい条件を指定する  
+この項目で前方一致とか範囲指定もできる
+
 ## 大元になるテーブル作成
 
-エンティティで定義したPK, SKを元にitem作成して  
+エンティティで定義したPK, SKを元にitem（レコード）作成して  
 各項目で必要なデータもAttributesとして考えてく
 
 | Partition Key             | Sort Key                       | Attributes                      |                      |                           |
@@ -81,7 +84,9 @@ Amazon DynamoDB Stream発動してLambdaが計算して2行目の合計値を更
 ### Global Secondary Index
 
 作成した元テーブルのPKでは検索できないような条件がある場合  
-Global Secondary Indexを指定して検索できるようになるのだ イメージとしては別のテーブルが作成されるような感じっぽい
+Global Secondary Indexを指定して検索できるようになるのだ
+
+イメージとしては別のテーブルが作成されるような感じっぽい
 
 例えば従業員の名前から従業員詳細取りたいとか  
 お客様の特定期間における購入情報を知りたいとか
@@ -108,7 +113,14 @@ Global Secondary Indexを指定して検索できるようになるのだ イメ
 こうするとよしなにpartition分散したデータ格納になって  
 ほっとパーティションを生み出さず効率よくデータが取れる！
 
-ちなみにNの算出は計算式があってそれに準ずるが良いらしい
+ちなみにNの算出は以下のような計算式があって  
+それに準じて算出するのが良いらしい
+
+```
+ItemsPerRCU = 4KB / AvgItemSize
+PartitionMaxReadRate = 3K * ItemsPerRCU
+N = MaxRequiredIO / PartitionMaxReadRate
+```
 
 # その他特質すべきパターン
 
@@ -126,13 +138,10 @@ https://docs.aws.amazon.com/ja_jp/amazondynamodb/latest/developerguide/bp-time-s
 
 # まとめ
 
-パーティションキー単位でストレージに保存されて  
-ソートキーでソートされた順で近くに保存されてる
+まだまだ奥は深そうだけど  
+なんとなくドキュメント読んで雰囲気を掴んだ
 
-上記特性を鑑みて  
-各パーティションに分散してデータ取得のリクエストが行くようにするのが素敵らしい  
-下手な設計すると毎度同じパーティションにリクエストが行くホットパーティションが発生して  
-レイテンシーが高く高コストな感じになっちゃうみたい
-
-今回ドキュメント読んだだけなので  
-実際に作ってみてどれくらいのレイテンシーやコストになるのか検証したい
+結構癖が強めだが  
+なんといっても使用しないとお金かからない  
+サーバーレス構成の利点はでかいので  
+今Privateで作ってるシステムのストレージとして検討してみる！！
